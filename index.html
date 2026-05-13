@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Liftbook</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Liftbook">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#f3ede1">
+<link rel="manifest" href='data:application/manifest+json,{"name":"Liftbook","short_name":"Liftbook","start_url":".","display":"standalone","background_color":"%23f3ede1","theme_color":"%23f3ede1"}'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f3ede1;
+    --card: #ebe3d3;
+    --card-soft: #efe7d6;
+    --ink: #1a1612;
+    --ink2: #524a40;
+    --accent: #b8451a;
+    --accent-soft: rgba(184, 69, 26, 0.13);
+    --muted: #968e80;
+    --border: #d6cdb8;
+    --border-soft: #e3dbc8;
+    --done: #5a7a4a;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    min-height: 100dvh;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--accent); color: var(--bg); }
+  .serif { font-family: 'Fraunces', Georgia, serif; }
+  .sans { font-family: 'Bricolage Grotesque', system-ui, -apple-system, sans-serif; }
+  .smallcaps { text-transform: uppercase; letter-spacing: 0.18em; }
+
+  .app-wrap {
+    max-width: 540px;
+    margin: 0 auto;
+    padding: 0 22px 100px;
+    padding-top: env(safe-area-inset-top, 0);
+    padding-bottom: max(100px, env(safe-area-inset-bottom, 0));
+  }
+
+  select.editorial {
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    color: var(--ink);
+    border: none;
+    border-bottom: 2px solid var(--ink);
+    padding: 12px 30px 12px 0;
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 26px;
+    width: 100%;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath fill='%231a1612' d='M7 10L2 5h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 4px center;
+    border-radius: 0;
+  }
+  select.editorial:focus { outline: none; border-bottom-color: var(--accent); }
+
+  input.editorial {
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    color: var(--ink);
+    border: none;
+    border-bottom: 1px solid var(--ink);
+    padding: 8px 0;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 700;
+    font-size: 36px;
+    width: 100%;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    border-radius: 0;
+  }
+  input.editorial:focus { outline: none; border-bottom-color: var(--accent); border-bottom-width: 2px; }
+  input.editorial::-webkit-outer-spin-button,
+  input.editorial::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  input.editorial[type=number] { -moz-appearance: textfield; }
+
+  .area-link {
+    background: none;
+    border: none;
+    padding: 4px 0;
+    margin: 0;
+    color: var(--muted);
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.15s ease;
+    position: relative;
+  }
+  .area-link:hover { color: var(--ink2); }
+  .area-link.active { color: var(--ink); }
+  .area-link.active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -4px;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  .btn-log {
+    background: var(--ink);
+    color: var(--bg);
+    border: none;
+    padding: 18px 24px;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.15s ease;
+    border-radius: 0;
+  }
+  .btn-log:hover:not(:disabled),
+  .btn-log:active:not(:disabled) { background: var(--accent); }
+  .btn-log:disabled {
+    background: var(--border);
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+
+  .nav-link {
+    background: none;
+    border: none;
+    padding: 14px 0;
+    color: var(--muted);
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    cursor: pointer;
+    flex: 1;
+    position: relative;
+    transition: color 0.15s ease;
+  }
+  .nav-link.active { color: var(--ink); }
+  .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--ink);
+  }
+
+  .rule-thick { border-top: 2px solid var(--ink); }
+  .rule-thin { border-top: 1px solid var(--border-soft); }
+
+  @keyframes flashEntry {
+    0% { background: var(--accent-soft); }
+    100% { background: transparent; }
+  }
+  .flash-entry { animation: flashEntry 1.6s ease-out; }
+
+  @keyframes slideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .pb-toast { animation: slideIn 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); }
+
+  .delete-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 13px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    padding: 4px;
+  }
+  .delete-btn:hover { color: var(--accent); }
+
+  .session-row {
+    display: flex;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border-soft);
+    gap: 14px;
+    background: transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    transition: padding-left 0.18s ease;
+    color: var(--ink);
+  }
+  .session-row:hover { padding-left: 6px; }
+  .session-row.done { opacity: 0.55; }
+
+  .export-link {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--ink2);
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border-radius: 0;
+  }
+  .export-link:hover {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+
+  .add-custom-link {
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 4px 0;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+  .add-custom-link:hover { color: var(--ink); }
+
+  .text-input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    background: var(--bg);
+    color: var(--ink);
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 0;
+  }
+  .text-input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .loading-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100dvh;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--muted);
+    font-size: 18px;
+  }
+</style>
+</head>
+<body>
+<div id="app"><div class="loading-screen">opening journal…</div></div>
+
+<script>/* Preact 10.19.3 (MIT) */
+!function(n,l){"object"==typeof exports&&"undefined"!=typeof module?l(exports):"function"==typeof define&&define.amd?define(["exports"],l):l((n||self).preact={})}(this,function(n){var l,u,t,i,o,r,f,e,c,s=65536,a=1<<17,h={},p=[],v=/acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera/i,y=Array.isArray;function d(n,l){for(var u in l)n[u]=l[u];return n}function _(n){var l=n.parentNode;l&&l.removeChild(n)}function b(n,u,t){var i,o,r,f={};for(r in u)"key"==r?i=u[r]:"ref"==r?o=u[r]:f[r]=u[r];if(arguments.length>2&&(f.children=arguments.length>3?l.call(arguments,2):t),"function"==typeof n&&null!=n.defaultProps)for(r in n.defaultProps)void 0===f[r]&&(f[r]=n.defaultProps[r]);return g(n,f,i,o,null)}function g(n,l,i,o,r){var f={type:n,props:l,key:i,ref:o,__k:null,__:null,__b:0,__e:null,__d:void 0,__c:null,constructor:void 0,__v:null==r?++t:r,__i:-1,__u:0};return null==r&&null!=u.vnode&&u.vnode(f),f}function m(n){return n.children}function k(n,l){this.props=n,this.context=l}function w(n,l){if(null==l)return n.__?w(n.__,n.__i+1):null;for(var u;l<n.__k.length;l++)if(null!=(u=n.__k[l])&&null!=u.__e)return u.__e;return"function"==typeof n.type?w(n):null}function x(n){var l,u;if(null!=(n=n.__)&&null!=n.__c){for(n.__e=n.__c.base=null,l=0;l<n.__k.length;l++)if(null!=(u=n.__k[l])&&null!=u.__e){n.__e=n.__c.base=u.__e;break}return x(n)}}function P(n){(!n.__d&&(n.__d=!0)&&o.push(n)&&!S.__r++||r!==u.debounceRendering)&&((r=u.debounceRendering)||f)(S)}function S(){var n,l,t,i,r,f,c,s,a;for(o.sort(e);n=o.shift();)n.__d&&(l=o.length,i=void 0,f=(r=(t=n).__v).__e,s=[],a=[],(c=t.__P)&&((i=d({},r)).__v=r.__v+1,u.vnode&&u.vnode(i),L(c,i,r,t.__n,void 0!==c.ownerSVGElement,32&r.__u?[f]:null,s,null==f?w(r):f,!!(32&r.__u),a),i.__.__k[i.__i]=i,M(s,i,a),i.__e!=f&&x(i)),o.length>l&&o.sort(e));S.__r=0}function T(n,l,u,t,i,o,r,f,e,c,a){var v,y,d,_,b,g=t&&t.__k||p,m=l.length;for(u.__d=e,$(u,l,g),e=u.__d,v=0;v<m;v++)null!=(d=u.__k[v])&&"boolean"!=typeof d&&"function"!=typeof d&&(y=-1===d.__i?h:g[d.__i]||h,d.__i=v,L(n,d,y,i,o,r,f,e,c,a),_=d.__e,d.ref&&y.ref!=d.ref&&(y.ref&&N(y.ref,null,d),a.push(d.ref,d.__c||_,d)),null==b&&null!=_&&(b=_),d.__u&s||y.__k===d.__k?e=C(d,e,n):"function"==typeof d.type&&void 0!==d.__d?e=d.__d:_&&(e=_.nextSibling),d.__d=void 0,d.__u&=-196609);u.__d=e,u.__e=b}function $(n,l,u){var t,i,o,r,f,e=l.length,c=u.length,h=c,p=0;for(n.__k=[],t=0;t<e;t++)null!=(i=n.__k[t]=null==(i=l[t])||"boolean"==typeof i||"function"==typeof i?null:"string"==typeof i||"number"==typeof i||"bigint"==typeof i||i.constructor==String?g(null,i,null,null,i):y(i)?g(m,{children:i},null,null,null):void 0===i.constructor&&i.__b>0?g(i.type,i.props,i.key,i.ref?i.ref:null,i.__v):i)?(i.__=n,i.__b=n.__b+1,f=H(i,u,r=t+p,h),i.__i=f,o=null,-1!==f&&(h--,(o=u[f])&&(o.__u|=a)),null==o||null===o.__v?(-1==f&&p--,"function"!=typeof i.type&&(i.__u|=s)):f!==r&&(f===r+1?p++:f>r?h>e-r?p+=f-r:p--:p=f<r&&f==r-1?f-r:0,f!==t+p&&(i.__u|=s))):(o=u[t])&&null==o.key&&o.__e&&(o.__e==n.__d&&(n.__d=w(o)),O(o,o,!1),u[t]=null,h--);if(h)for(t=0;t<c;t++)null!=(o=u[t])&&0==(o.__u&a)&&(o.__e==n.__d&&(n.__d=w(o)),O(o,o))}function C(n,l,u){var t,i;if("function"==typeof n.type){for(t=n.__k,i=0;t&&i<t.length;i++)t[i]&&(t[i].__=n,l=C(t[i],l,u));return l}return n.__e!=l&&(u.insertBefore(n.__e,l||null),l=n.__e),l&&l.nextSibling}function H(n,l,u,t){var i=n.key,o=n.type,r=u-1,f=u+1,e=l[u];if(null===e||e&&i==e.key&&o===e.type)return u;if(t>(null!=e&&0==(e.__u&a)?1:0))for(;r>=0||f<l.length;){if(r>=0){if((e=l[r])&&0==(e.__u&a)&&i==e.key&&o===e.type)return r;r--}if(f<l.length){if((e=l[f])&&0==(e.__u&a)&&i==e.key&&o===e.type)return f;f++}}return-1}function I(n,l,u){"-"===l[0]?n.setProperty(l,null==u?"":u):n[l]=null==u?"":"number"!=typeof u||v.test(l)?u:u+"px"}function j(n,l,u,t,i){var o;n:if("style"===l)if("string"==typeof u)n.style.cssText=u;else{if("string"==typeof t&&(n.style.cssText=t=""),t)for(l in t)u&&l in u||I(n.style,l,"");if(u)for(l in u)t&&u[l]===t[l]||I(n.style,l,u[l])}else if("o"===l[0]&&"n"===l[1])o=l!==(l=l.replace(/(PointerCapture)$|Capture$/,"$1")),l=l.toLowerCase()in n?l.toLowerCase().slice(2):l.slice(2),n.l||(n.l={}),n.l[l+o]=u,u?t?u.u=t.u:(u.u=Date.now(),n.addEventListener(l,o?D:A,o)):n.removeEventListener(l,o?D:A,o);else{if(i)l=l.replace(/xlink(H|:h)/,"h").replace(/sName$/,"s");else if("width"!==l&&"height"!==l&&"href"!==l&&"list"!==l&&"form"!==l&&"tabIndex"!==l&&"download"!==l&&"rowSpan"!==l&&"colSpan"!==l&&"role"!==l&&l in n)try{n[l]=null==u?"":u;break n}catch(n){}"function"==typeof u||(null==u||!1===u&&"-"!==l[4]?n.removeAttribute(l):n.setAttribute(l,u))}}function A(n){var l=this.l[n.type+!1];if(n.t){if(n.t<=l.u)return}else n.t=Date.now();return l(u.event?u.event(n):n)}function D(n){return this.l[n.type+!0](u.event?u.event(n):n)}function L(n,l,t,i,o,r,f,e,c,s){var a,h,p,v,_,b,g,w,x,P,S,$,C,H,I,j=l.type;if(void 0!==l.constructor)return null;128&t.__u&&(c=!!(32&t.__u),r=[e=l.__e=t.__e]),(a=u.__b)&&a(l);n:if("function"==typeof j)try{if(w=l.props,x=(a=j.contextType)&&i[a.__c],P=a?x?x.props.value:a.__:i,t.__c?g=(h=l.__c=t.__c).__=h.__E:("prototype"in j&&j.prototype.render?l.__c=h=new j(w,P):(l.__c=h=new k(w,P),h.constructor=j,h.render=q),x&&x.sub(h),h.props=w,h.state||(h.state={}),h.context=P,h.__n=i,p=h.__d=!0,h.__h=[],h._sb=[]),null==h.__s&&(h.__s=h.state),null!=j.getDerivedStateFromProps&&(h.__s==h.state&&(h.__s=d({},h.__s)),d(h.__s,j.getDerivedStateFromProps(w,h.__s))),v=h.props,_=h.state,h.__v=l,p)null==j.getDerivedStateFromProps&&null!=h.componentWillMount&&h.componentWillMount(),null!=h.componentDidMount&&h.__h.push(h.componentDidMount);else{if(null==j.getDerivedStateFromProps&&w!==v&&null!=h.componentWillReceiveProps&&h.componentWillReceiveProps(w,P),!h.__e&&(null!=h.shouldComponentUpdate&&!1===h.shouldComponentUpdate(w,h.__s,P)||l.__v===t.__v)){for(l.__v!==t.__v&&(h.props=w,h.state=h.__s,h.__d=!1),l.__e=t.__e,l.__k=t.__k,l.__k.forEach(function(n){n&&(n.__=l)}),S=0;S<h._sb.length;S++)h.__h.push(h._sb[S]);h._sb=[],h.__h.length&&f.push(h);break n}null!=h.componentWillUpdate&&h.componentWillUpdate(w,h.__s,P),null!=h.componentDidUpdate&&h.__h.push(function(){h.componentDidUpdate(v,_,b)})}if(h.context=P,h.props=w,h.__P=n,h.__e=!1,$=u.__r,C=0,"prototype"in j&&j.prototype.render){for(h.state=h.__s,h.__d=!1,$&&$(l),a=h.render(h.props,h.state,h.context),H=0;H<h._sb.length;H++)h.__h.push(h._sb[H]);h._sb=[]}else do{h.__d=!1,$&&$(l),a=h.render(h.props,h.state,h.context),h.state=h.__s}while(h.__d&&++C<25);h.state=h.__s,null!=h.getChildContext&&(i=d(d({},i),h.getChildContext())),p||null==h.getSnapshotBeforeUpdate||(b=h.getSnapshotBeforeUpdate(v,_)),T(n,y(I=null!=a&&a.type===m&&null==a.key?a.props.children:a)?I:[I],l,t,i,o,r,f,e,c,s),h.base=l.__e,l.__u&=-161,h.__h.length&&f.push(h),g&&(h.__E=h.__=null)}catch(n){l.__v=null,c||null!=r?(l.__e=e,l.__u|=c?160:32,r[r.indexOf(e)]=null):(l.__e=t.__e,l.__k=t.__k),u.__e(n,l,t)}else null==r&&l.__v===t.__v?(l.__k=t.__k,l.__e=t.__e):l.__e=z(t.__e,l,t,i,o,r,f,c,s);(a=u.diffed)&&a(l)}function M(n,l,t){l.__d=void 0;for(var i=0;i<t.length;i++)N(t[i],t[++i],t[++i]);u.__c&&u.__c(l,n),n.some(function(l){try{n=l.__h,l.__h=[],n.some(function(n){n.call(l)})}catch(n){u.__e(n,l.__v)}})}function z(n,u,t,i,o,r,f,e,c){var s,a,p,v,d,b,g,m=t.props,k=u.props,x=u.type;if("svg"===x&&(o=!0),null!=r)for(s=0;s<r.length;s++)if((d=r[s])&&"setAttribute"in d==!!x&&(x?d.localName===x:3===d.nodeType)){n=d,r[s]=null;break}if(null==n){if(null===x)return document.createTextNode(k);n=o?document.createElementNS("http://www.w3.org/2000/svg",x):document.createElement(x,k.is&&k),r=null,e=!1}if(null===x)m===k||e&&n.data===k||(n.data=k);else{if(r=r&&l.call(n.childNodes),m=t.props||h,!e&&null!=r)for(m={},s=0;s<n.attributes.length;s++)m[(d=n.attributes[s]).name]=d.value;for(s in m)d=m[s],"children"==s||("dangerouslySetInnerHTML"==s?p=d:"key"===s||s in k||j(n,s,null,d,o));for(s in k)d=k[s],"children"==s?v=d:"dangerouslySetInnerHTML"==s?a=d:"value"==s?b=d:"checked"==s?g=d:"key"===s||e&&"function"!=typeof d||m[s]===d||j(n,s,d,m[s],o);if(a)e||p&&(a.__html===p.__html||a.__html===n.innerHTML)||(n.innerHTML=a.__html),u.__k=[];else if(p&&(n.innerHTML=""),T(n,y(v)?v:[v],u,t,i,o&&"foreignObject"!==x,r,f,r?r[0]:t.__k&&w(t,0),e,c),null!=r)for(s=r.length;s--;)null!=r[s]&&_(r[s]);e||(s="value",void 0!==b&&(b!==n[s]||"progress"===x&&!b||"option"===x&&b!==m[s])&&j(n,s,b,m[s],!1),s="checked",void 0!==g&&g!==n[s]&&j(n,s,g,m[s],!1))}return n}function N(n,l,t){try{"function"==typeof n?n(l):n.current=l}catch(n){u.__e(n,t)}}function O(n,l,t){var i,o;if(u.unmount&&u.unmount(n),(i=n.ref)&&(i.current&&i.current!==n.__e||N(i,null,l)),null!=(i=n.__c)){if(i.componentWillUnmount)try{i.componentWillUnmount()}catch(n){u.__e(n,l)}i.base=i.__P=null,n.__c=void 0}if(i=n.__k)for(o=0;o<i.length;o++)i[o]&&O(i[o],l,t||"function"!=typeof n.type);t||null==n.__e||_(n.__e),n.__=n.__e=n.__d=void 0}function q(n,l,u){return this.constructor(n,u)}function B(n,t,i){var o,r,f,e;u.__&&u.__(n,t),r=(o="function"==typeof i)?null:i&&i.__k||t.__k,f=[],e=[],L(t,n=(!o&&i||t).__k=b(m,null,[n]),r||h,h,void 0!==t.ownerSVGElement,!o&&i?[i]:r?null:t.firstChild?l.call(t.childNodes):null,f,!o&&i?i:r?r.__e:t.firstChild,o,e),M(f,n,e)}l=p.slice,u={__e:function(n,l,u,t){for(var i,o,r;l=l.__;)if((i=l.__c)&&!i.__)try{if((o=i.constructor)&&null!=o.getDerivedStateFromError&&(i.setState(o.getDerivedStateFromError(n)),r=i.__d),null!=i.componentDidCatch&&(i.componentDidCatch(n,t||{}),r=i.__d),r)return i.__E=i}catch(l){n=l}throw n}},t=0,i=function(n){return null!=n&&null==n.constructor},k.prototype.setState=function(n,l){var u;u=null!=this.__s&&this.__s!==this.state?this.__s:this.__s=d({},this.state),"function"==typeof n&&(n=n(d({},u),this.props)),n&&d(u,n),null!=n&&this.__v&&(l&&this._sb.push(l),P(this))},k.prototype.forceUpdate=function(n){this.__v&&(this.__e=!0,n&&this.__h.push(n),P(this))},k.prototype.render=m,o=[],f="function"==typeof Promise?Promise.prototype.then.bind(Promise.resolve()):setTimeout,e=function(n,l){return n.__v.__b-l.__v.__b},S.__r=0,c=0,n.Component=k,n.Fragment=m,n.cloneElement=function(n,u,t){var i,o,r,f,e=d({},n.props);for(r in n.type&&n.type.defaultProps&&(f=n.type.defaultProps),u)"key"==r?i=u[r]:"ref"==r?o=u[r]:e[r]=void 0===u[r]&&void 0!==f?f[r]:u[r];return arguments.length>2&&(e.children=arguments.length>3?l.call(arguments,2):t),g(n.type,e,i||n.key,o||n.ref,null)},n.createContext=function(n,l){var u={__c:l="__cC"+c++,__:n,Consumer:function(n,l){return n.children(l)},Provider:function(n){var u,t;return this.getChildContext||(u=[],(t={})[l]=this,this.getChildContext=function(){return t},this.shouldComponentUpdate=function(n){this.props.value!==n.value&&u.some(function(n){n.__e=!0,P(n)})},this.sub=function(n){u.push(n);var l=n.componentWillUnmount;n.componentWillUnmount=function(){u.splice(u.indexOf(n),1),l&&l.call(n)}}),n.children}};return u.Provider.__=u.Consumer.contextType=u},n.createElement=b,n.createRef=function(){return{current:null}},n.h=b,n.hydrate=function n(l,u){B(l,u,n)},n.isValidElement=i,n.options=u,n.render=B,n.toChildArray=function n(l,u){return u=u||[],null==l||"boolean"==typeof l||(y(l)?l.some(function(l){n(l,u)}):u.push(l)),u}});
+</script>
+<script>/* Preact Hooks 10.19.3 (MIT) */
+!function(n,t){"object"==typeof exports&&"undefined"!=typeof module?t(exports,require("preact")):"function"==typeof define&&define.amd?define(["exports","preact"],t):t((n||self).preactHooks={},n.preact)}(this,function(n,t){var u,r,i,o,f=0,e=[],c=[],a=t.options.__b,v=t.options.__r,l=t.options.diffed,d=t.options.__c,s=t.options.unmount;function p(n,u){t.options.__h&&t.options.__h(r,n,f||u),f=0;var i=r.__H||(r.__H={__:[],__h:[]});return n>=i.__.length&&i.__.push({__V:c}),i.__[n]}function h(n){return f=1,y(g,n)}function y(n,t,i){var o=p(u++,2);if(o.t=n,!o.__c&&(o.__=[i?i(t):g(void 0,t),function(n){var t=o.__N?o.__N[0]:o.__[0],u=o.t(t,n);t!==u&&(o.__N=[u,o.__[1]],o.__c.setState({}))}],o.__c=r,!r.u)){var f=function(n,t,u){if(!o.__c.__H)return!0;var r=o.__c.__H.__.filter(function(n){return n.__c});if(r.every(function(n){return!n.__N}))return!e||e.call(this,n,t,u);var i=!1;return r.forEach(function(n){if(n.__N){var t=n.__[0];n.__=n.__N,n.__N=void 0,t!==n.__[0]&&(i=!0)}}),!(!i&&o.__c.props===n)&&(!e||e.call(this,n,t,u))};r.u=!0;var e=r.shouldComponentUpdate,c=r.componentWillUpdate;r.componentWillUpdate=function(n,t,u){if(this.__e){var r=e;e=void 0,f(n,t,u),e=r}c&&c.call(this,n,t,u)},r.shouldComponentUpdate=f}return o.__N||o.__}function m(n,i){var o=p(u++,4);!t.options.__s&&F(o.__H,i)&&(o.__=n,o.i=i,r.__h.push(o))}function _(n,t){var r=p(u++,7);return F(r.__H,t)?(r.__V=n(),r.i=t,r.__h=n,r.__V):r.__}function T(){for(var n;n=e.shift();)if(n.__P&&n.__H)try{n.__H.__h.forEach(x),n.__H.__h.forEach(A),n.__H.__h=[]}catch(u){n.__H.__h=[],t.options.__e(u,n.__v)}}t.options.__b=function(n){r=null,a&&a(n)},t.options.__r=function(n){v&&v(n),u=0;var t=(r=n.__c).__H;t&&(i===r?(t.__h=[],r.__h=[],t.__.forEach(function(n){n.__N&&(n.__=n.__N),n.__V=c,n.__N=n.i=void 0})):(t.__h.forEach(x),t.__h.forEach(A),t.__h=[],u=0)),i=r},t.options.diffed=function(n){l&&l(n);var u=n.__c;u&&u.__H&&(u.__H.__h.length&&(1!==e.push(u)&&o===t.options.requestAnimationFrame||((o=t.options.requestAnimationFrame)||q)(T)),u.__H.__.forEach(function(n){n.i&&(n.__H=n.i),n.__V!==c&&(n.__=n.__V),n.i=void 0,n.__V=c})),i=r=null},t.options.__c=function(n,u){u.some(function(n){try{n.__h.forEach(x),n.__h=n.__h.filter(function(n){return!n.__||A(n)})}catch(r){u.some(function(n){n.__h&&(n.__h=[])}),u=[],t.options.__e(r,n.__v)}}),d&&d(n,u)},t.options.unmount=function(n){s&&s(n);var u,r=n.__c;r&&r.__H&&(r.__H.__.forEach(function(n){try{x(n)}catch(n){u=n}}),r.__H=void 0,u&&t.options.__e(u,r.__v))};var b="function"==typeof requestAnimationFrame;function q(n){var t,u=function(){clearTimeout(r),b&&cancelAnimationFrame(t),setTimeout(n)},r=setTimeout(u,100);b&&(t=requestAnimationFrame(u))}function x(n){var t=r,u=n.__c;"function"==typeof u&&(n.__c=void 0,u()),r=t}function A(n){var t=r;n.__c=n.__(),r=t}function F(n,t){return!n||n.length!==t.length||t.some(function(t,u){return t!==n[u]})}function g(n,t){return"function"==typeof t?t(n):t}n.useCallback=function(n,t){return f=8,_(function(){return n},t)},n.useContext=function(n){var t=r.context[n.__c],i=p(u++,9);return i.c=n,t?(null==i.__&&(i.__=!0,t.sub(r)),t.props.value):n.__},n.useDebugValue=function(n,u){t.options.useDebugValue&&t.options.useDebugValue(u?u(n):n)},n.useEffect=function(n,i){var o=p(u++,3);!t.options.__s&&F(o.__H,i)&&(o.__=n,o.i=i,r.__H.__h.push(o))},n.useErrorBoundary=function(n){var t=p(u++,10),i=h();return t.__=n,r.componentDidCatch||(r.componentDidCatch=function(n,u){t.__&&t.__(n,u),i[1](n)}),[i[0],function(){i[1](void 0)}]},n.useId=function(){var n=p(u++,11);if(!n.__){for(var t=r.__v;null!==t&&!t.__m&&null!==t.__;)t=t.__;var i=t.__m||(t.__m=[0,0]);n.__="P"+i[0]+"-"+i[1]++}return n.__},n.useImperativeHandle=function(n,t,u){f=6,m(function(){return"function"==typeof n?(n(t()),function(){return n(null)}):n?(n.current=t(),function(){return n.current=null}):void 0},null==u?u:u.concat(n))},n.useLayoutEffect=m,n.useMemo=_,n.useReducer=y,n.useRef=function(n){return f=5,_(function(){return{current:n}},[])},n.useState=h});
+</script>
+<script>/* htm 3.1.1 (Apache-2.0) */
+!function(n,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define(e):n.htm=e()}(this,function(){var n=function(e,t,u,s){var r;t[0]=0;for(var p=1;p<t.length;p++){var h=t[p++],o=t[p]?(t[0]|=h?1:2,u[t[p++]]):t[++p];3===h?s[0]=o:4===h?s[1]=Object.assign(s[1]||{},o):5===h?(s[1]=s[1]||{})[t[++p]]=o:6===h?s[1][t[++p]]+=o+"":h?(r=e.apply(o,n(e,o,u,["",null])),s.push(r),o[0]?t[0]|=2:(t[p-2]=0,t[p]=r)):s.push(o)}return s},e=new Map;return function(t){var u=e.get(this);return u||(u=new Map,e.set(this,u)),(u=n(this,u.get(t)||(u.set(t,u=function(n){for(var e,t,u=1,s="",r="",p=[0],h=function(n){1===u&&(n||(s=s.replace(/^\s*\n\s*|\s*\n\s*$/g,"")))?p.push(0,n,s):3===u&&(n||s)?(p.push(3,n,s),u=2):2===u&&"..."===s&&n?p.push(4,n,0):2===u&&s&&!n?p.push(5,0,!0,s):u>=5&&((s||!n&&5===u)&&(p.push(u,0,s,t),u=6),n&&(p.push(u,n,0,t),u=6)),s=""},o=0;o<n.length;o++){o&&(1===u&&h(),h(o));for(var f=0;f<n[o].length;f++)e=n[o][f],1===u?"<"===e?(h(),p=[p],u=3):s+=e:4===u?"--"===s&&">"===e?(u=1,s=""):s=e+s[0]:r?e===r?r="":s+=e:'"'===e||"'"===e?r=e:">"===e?(h(),u=1):u&&("="===e?(u=5,t=s,s=""):"/"===e&&(u<5||">"===n[o][f+1])?(h(),3===u&&(p=p[0]),u=p,(p=p[0]).push(2,0,u),u=0):" "===e||"\t"===e||"\n"===e||"\r"===e?(h(),u=2):s+=e),3===u&&"!--"===s&&(u=4,p=p[0])}return h(),p}(t)),u),arguments,[])).length>1?u:u[0]}});
+</script>
+<script>
+(function() {
+  if (typeof preact === 'undefined' || typeof preactHooks === 'undefined' || typeof htm === 'undefined') {
+    document.getElementById('app').innerHTML = '<div class="loading-screen" style="flex-direction:column;text-align:center;padding:20px;">Failed to load libraries.<br><br><span style="font-size:13px;">Check your internet on first load, then try again.</span></div>';
+    return;
+  }
+
+  const { h, render, Fragment } = preact;
+  const { useState, useEffect, useMemo } = preactHooks;
+  const html = htm.bind(h);
+
+  /* ====================== DATA ====================== */
+
+  const EXERCISES = {
+    CHEST: [
+      "Barbell Bench Press","Dumbbell Bench Press","Incline Barbell Press",
+      "Incline Dumbbell Press","Decline Bench Press","Dumbbell Flyes",
+      "Cable Flyes","Push-Ups","Dips"
+    ],
+    BACK: [
+      "Deadlift","Pull-Ups","Chin-Ups","Barbell Row","Dumbbell Row",
+      "Lat Pulldown","Seated Cable Row","T-Bar Row","Face Pulls"
+    ],
+    SHOULDERS: [
+      "Barbell Overhead Press","Dumbbell Overhead Press","Arnold Press",
+      "Lateral Raises","Front Raises","Rear Delt Flyes",
+      "Cable Lateral Raise","Shrugs"
+    ],
+    ARMS: [
+      "Barbell Curl","Dumbbell Curl","Hammer Curl","Preacher Curl",
+      "Cable Curl","Tricep Pushdown","Skull Crushers",
+      "Overhead Tricep Extension","Close-Grip Bench Press"
+    ],
+    LEGS: [
+      "Back Squat","Front Squat","Romanian Deadlift","Leg Press",
+      "Walking Lunges","Bulgarian Split Squat","Leg Extensions",
+      "Leg Curls","Standing Calf Raises","Seated Calf Raises"
+    ],
+    CORE: [
+      "Plank","Hanging Leg Raises","Cable Crunches","Russian Twists",
+      "Ab Wheel Rollout","Decline Sit-Ups"
+    ]
+  };
+  const AREAS = Object.keys(EXERCISES);
+
+  const FORM_TIPS = {
+    "Barbell Bench Press": "Retract shoulder blades; bar touches mid-chest, drives back over the shoulders.",
+    "Dumbbell Bench Press": "Wrists stacked over elbows; lower until upper arms reach 90°.",
+    "Incline Barbell Press": "Bench at 30°; bar lands on upper chest, just below the collarbone.",
+    "Incline Dumbbell Press": "Slight arch, ribcage up; squeeze chest hard at the top.",
+    "Decline Bench Press": "Bar to lower chest; keep elbows tucked at roughly 45°.",
+    "Dumbbell Flyes": "Soft bend in elbows, locked throughout; feel the stretch, not the strain.",
+    "Cable Flyes": "Slight forward lean; cross hands at the bottom for full contraction.",
+    "Push-Ups": "Body in a straight line; lower the chest, not the chin, to the floor.",
+    "Dips": "Lean forward for chest, upright for triceps; lower to 90° at the elbow.",
+    "Deadlift": "Bar over mid-foot; lats engaged, hips and shoulders rise together.",
+    "Pull-Ups": "Lead with the chest, drive elbows down; full hang at the bottom.",
+    "Chin-Ups": "Palms facing you; squeeze biceps and pull the chin over the bar.",
+    "Barbell Row": "Hinge at hips, flat back; pull bar to lower ribs, not the chest.",
+    "Dumbbell Row": "Brace on a bench; pull elbow past the ribcage, no twisting.",
+    "Lat Pulldown": "Bar to upper chest; lean back slightly, drive the elbows down.",
+    "Seated Cable Row": "Chest up, no rocking; pull to the navel, squeeze at the end.",
+    "T-Bar Row": "Neutral spine; pull handles to lower chest, elbows close to the body.",
+    "Face Pulls": "Pull rope to forehead height; elbows high, thumbs back.",
+    "Barbell Overhead Press": "Bar at collarbone; brace the core, press straight up overhead.",
+    "Dumbbell Overhead Press": "Wrists neutral; press up and slightly in, no flaring.",
+    "Arnold Press": "Start with palms facing you; rotate out as you press up.",
+    "Lateral Raises": "Lead with the elbows; raise to shoulder height, no shrugging.",
+    "Front Raises": "Soft elbows; raise to eye level, control on the way down.",
+    "Rear Delt Flyes": "Hinge forward; pull elbows out wide, squeeze shoulder blades.",
+    "Cable Lateral Raise": "Cable from behind the body; smooth arc, no swinging.",
+    "Shrugs": "Straight up, not rolling; pause at the top for a second.",
+    "Barbell Curl": "Elbows pinned to ribs; no swinging, full extension at the bottom.",
+    "Dumbbell Curl": "Supinate (twist palm up) as you curl; squeeze at the top.",
+    "Hammer Curl": "Neutral grip throughout; lift to shoulder, slow on the way down.",
+    "Preacher Curl": "Full extension at the bottom; don't let the weight rest there.",
+    "Cable Curl": "Constant tension; elbows fixed at sides, peak squeeze at the top.",
+    "Tricep Pushdown": "Elbows pinned; only the forearms move, full extension at the bottom.",
+    "Skull Crushers": "Elbows stay in line; lower the bar past the forehead, not to it.",
+    "Overhead Tricep Extension": "Elbows close to the head; full stretch at the bottom.",
+    "Close-Grip Bench Press": "Shoulder-width grip; elbows tucked, bar to lower chest.",
+    "Back Squat": "Brace the core; sit between the heels, knees track over the toes.",
+    "Front Squat": "Elbows up, bar on shoulders; chest tall, full depth if mobility allows.",
+    "Romanian Deadlift": "Hinge, don't squat; soft knees, bar travels close to the legs.",
+    "Leg Press": "Feet shoulder-width; lower until knees are 90°, don't lock at the top.",
+    "Walking Lunges": "Step long; back knee just above the ground, torso upright.",
+    "Bulgarian Split Squat": "Front foot far enough out; drop straight down, not forward.",
+    "Leg Extensions": "Full extension at the top, brief pause; control on the way down.",
+    "Leg Curls": "Drive heels to glutes; no jerking at the start of the rep.",
+    "Standing Calf Raises": "Full stretch at the bottom; up onto the big toe at the top.",
+    "Seated Calf Raises": "Slow eccentric; pause at the top, deep stretch at the bottom.",
+    "Plank": "Tuck the pelvis; straight line from head to heels, breathe steady.",
+    "Hanging Leg Raises": "No swinging; raise legs to 90°, slow back down.",
+    "Cable Crunches": "Curl the spine down, don't hip-hinge; round the back.",
+    "Russian Twists": "Lean back 45°; rotate from the torso, not the arms.",
+    "Ab Wheel Rollout": "Tuck the pelvis; out as far as form allows, no sagging.",
+    "Decline Sit-Ups": "Hands at chest, not behind head; chin tucked, slow descent."
+  };
+
+  const SESSIONS = [
+    {
+      id: "push", name: "Push",
+      subtitle: "Chest · Shoulders · Triceps",
+      italic: "the pushing day",
+      exercises: [
+        { area: "CHEST", name: "Barbell Bench Press", scheme: "4 × 6–8" },
+        { area: "SHOULDERS", name: "Barbell Overhead Press", scheme: "3 × 8–10" },
+        { area: "CHEST", name: "Incline Dumbbell Press", scheme: "3 × 8–12" },
+        { area: "SHOULDERS", name: "Lateral Raises", scheme: "3 × 12–15" },
+        { area: "ARMS", name: "Skull Crushers", scheme: "3 × 8–10" },
+        { area: "ARMS", name: "Tricep Pushdown", scheme: "3 × 10–12" }
+      ]
+    },
+    {
+      id: "pull", name: "Pull",
+      subtitle: "Back · Biceps",
+      italic: "the pulling day",
+      exercises: [
+        { area: "BACK", name: "Deadlift", scheme: "3 × 5" },
+        { area: "BACK", name: "Pull-Ups", scheme: "4 × 6–10" },
+        { area: "BACK", name: "Barbell Row", scheme: "3 × 8–10" },
+        { area: "BACK", name: "Lat Pulldown", scheme: "3 × 10–12" },
+        { area: "ARMS", name: "Barbell Curl", scheme: "3 × 8–10" },
+        { area: "ARMS", name: "Hammer Curl", scheme: "3 × 10–12" }
+      ]
+    },
+    {
+      id: "legs", name: "Legs",
+      subtitle: "Quads · Hamstrings · Glutes · Calves",
+      italic: "the heaviest day",
+      exercises: [
+        { area: "LEGS", name: "Back Squat", scheme: "4 × 6–8" },
+        { area: "LEGS", name: "Romanian Deadlift", scheme: "3 × 8–10" },
+        { area: "LEGS", name: "Leg Press", scheme: "3 × 10–12" },
+        { area: "LEGS", name: "Bulgarian Split Squat", scheme: "3 × 10" },
+        { area: "LEGS", name: "Leg Curls", scheme: "3 × 10–12" },
+        { area: "LEGS", name: "Standing Calf Raises", scheme: "4 × 12–15" }
+      ]
+    }
+  ];
+
+  const STORAGE_KEY = "liftbook-workouts-v1";
+  const CUSTOM_KEY = "liftbook-custom-exercises-v1";
+
+  /* ====================== HELPERS ====================== */
+
+  const formatDate = (d) => new Date(d).toLocaleDateString("en-GB", {
+    weekday: "long", day: "numeric", month: "long"
+  });
+
+  const shortDate = (d) => new Date(d).toLocaleDateString("en-GB", {
+    day: "numeric", month: "short"
+  });
+
+  const timeAgo = (iso) => {
+    const diff = (Date.now() - new Date(iso).getTime()) / 1000;
+    if (diff < 60) return "moments ago";
+    if (diff < 3600) return Math.floor(diff / 60) + " min ago";
+    if (diff < 86400) return Math.floor(diff / 3600) + " hr ago";
+    const d = Math.floor(diff / 86400);
+    if (d === 1) return "yesterday";
+    if (d < 7) return d + " days ago";
+    if (d < 30) return Math.floor(d / 7) + " wk ago";
+    if (d < 365) return Math.floor(d / 30) + " mo ago";
+    return Math.floor(d / 365) + " yr ago";
+  };
+
+  // localStorage with safety checks
+  const storageAvailable = (() => {
+    try {
+      const k = "__lb_test__";
+      window.localStorage.setItem(k, "1");
+      window.localStorage.removeItem(k);
+      return true;
+    } catch (e) { return false; }
+  })();
+
+  const loadJSON = (key) => {
+    if (!storageAvailable) return null;
+    try {
+      const v = window.localStorage.getItem(key);
+      return v ? JSON.parse(v) : null;
+    } catch (e) { return null; }
+  };
+
+  const saveJSON = (key, value) => {
+    if (!storageAvailable) throw new Error("Local storage not available");
+    window.localStorage.setItem(key, JSON.stringify(value));
+  };
+
+  /* ====================== CHART ====================== */
+
+  function MiniChart({ data }) {
+    if (!data || data.length < 2) return null;
+    const W = 600, H = 220;
+    const pad = { top: 12, right: 16, bottom: 28, left: 40 };
+    const innerW = W - pad.left - pad.right;
+    const innerH = H - pad.top - pad.bottom;
+    const weights = data.map(d => d.weight);
+    const minW = Math.min.apply(null, weights);
+    const maxW = Math.max.apply(null, weights);
+    const range = (maxW - minW) || 1;
+    const yMin = minW - range * 0.15;
+    const yMax = maxW + range * 0.15;
+    const x = (i) => pad.left + (data.length === 1 ? innerW / 2 : (i / (data.length - 1)) * innerW);
+    const y = (w) => pad.top + (1 - (w - yMin) / (yMax - yMin)) * innerH;
+    const path = data.map((d, i) => (i === 0 ? "M" : "L") + " " + x(i) + " " + y(d.weight)).join(" ");
+    const yTickValues = [yMin, (yMin + yMax) / 2, yMax].map(v => Math.round(v * 10) / 10);
+
+    return html`
+      <svg viewBox="0 0 ${W} ${H}" style=${{ width: "100%", height: "auto", display: "block" }} preserveAspectRatio="xMidYMid meet">
+        ${yTickValues.map(t => html`
+          <g key=${"yt-" + t}>
+            <line x1=${pad.left} x2=${W - pad.right} y1=${y(t)} y2=${y(t)}
+              stroke="var(--border)" stroke-dasharray="2 4" />
+            <text x=${pad.left - 6} y=${y(t) + 3}
+              font-size="11" font-family="Bricolage Grotesque" fill="var(--muted)" text-anchor="end">${t}</text>
+          </g>
+        `)}
+        <text x=${x(0)} y=${H - 8}
+          font-size="11" font-family="Bricolage Grotesque" fill="var(--muted)" text-anchor="start">
+          ${shortDate(data[0].date)}
+        </text>
+        ${data.length > 1 && html`
+          <text x=${x(data.length - 1)} y=${H - 8}
+            font-size="11" font-family="Bricolage Grotesque" fill="var(--muted)" text-anchor="end">
+            ${shortDate(data[data.length - 1].date)}
+          </text>
+        `}
+        <path d=${path} stroke="var(--accent)" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round" />
+        ${data.map((d, i) => html`
+          <circle key=${"dot-" + i} cx=${x(i)} cy=${y(d.weight)} r="4" fill="var(--accent)">
+            <title>${shortDate(d.date)}: ${d.weight}kg × ${d.reps}</title>
+          </circle>
+        `)}
+      </svg>
+    `;
+  }
+
+  /* ====================== MAIN APP ====================== */
+
+  function Liftbook() {
+    const [workouts, setWorkouts] = useState([]);
+    const [customExercises, setCustomExercises] = useState([]);
+    const [loaded, setLoaded] = useState(false);
+    const [view, setView] = useState("train");
+    const [bodyArea, setBodyArea] = useState("CHEST");
+    const [exercise, setExercise] = useState(EXERCISES.CHEST[0]);
+    const [weight, setWeight] = useState("");
+    const [reps, setReps] = useState("");
+    const [flashId, setFlashId] = useState(null);
+    const [pbCelebration, setPbCelebration] = useState(null);
+    const [saveStatus, setSaveStatus] = useState({ state: "idle", message: null });
+    const [showAddCustom, setShowAddCustom] = useState(false);
+    const [customName, setCustomName] = useState("");
+    const [customArea, setCustomArea] = useState("CHEST");
+    const [customTip, setCustomTip] = useState("");
+    const [customError, setCustomError] = useState("");
+
+    // Initial load
+    useEffect(() => {
+      if (!storageAvailable) {
+        setSaveStatus({ state: "error", message: "local storage unavailable" });
+        setLoaded(true);
+        return;
+      }
+      const w = loadJSON(STORAGE_KEY);
+      const c = loadJSON(CUSTOM_KEY);
+      if (Array.isArray(w)) {
+        setWorkouts(w);
+        setSaveStatus({ state: "loaded", message: w.length + " sets loaded" });
+      } else {
+        setSaveStatus({ state: "ready", message: "no saved data yet" });
+      }
+      if (Array.isArray(c)) setCustomExercises(c);
+      setLoaded(true);
+    }, []);
+
+    const persistWorkouts = (list) => {
+      if (!storageAvailable) {
+        setSaveStatus({ state: "error", message: "storage unavailable. export to back up." });
+        return;
+      }
+      setSaveStatus({ state: "saving", message: null });
+      try {
+        saveJSON(STORAGE_KEY, list);
+        setSaveStatus({ state: "saved", message: list.length + " sets saved" });
+      } catch (e) {
+        setSaveStatus({ state: "error", message: e.message || "save failed" });
+      }
+    };
+
+    const persistCustom = (list) => {
+      if (!storageAvailable) return;
+      try { saveJSON(CUSTOM_KEY, list); } catch (e) { console.error(e); }
+    };
+
+    const exercisesForArea = (area) => {
+      const built = EXERCISES[area] || [];
+      const cust = customExercises.filter(c => c.area === area).map(c => c.name);
+      return built.concat(cust);
+    };
+
+    const selectArea = (a) => {
+      setBodyArea(a);
+      setExercise(exercisesForArea(a)[0] || EXERCISES[a][0]);
+    };
+
+    const startFromSession = (area, name) => {
+      setBodyArea(area);
+      setExercise(name);
+      setView("train");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    const currentCustom = customExercises.find(c => c.name === exercise);
+    const currentTip = (currentCustom && currentCustom.tip) || FORM_TIPS[exercise] || null;
+
+    const exerciseHistory = useMemo(() =>
+      workouts.filter(w => w.exercise === exercise)
+        .sort((a, b) => new Date(b.date) - new Date(a.date)),
+      [workouts, exercise]
+    );
+
+    const pb = useMemo(() => {
+      if (!exerciseHistory.length) return null;
+      return exerciseHistory.reduce((m, w) => w.weight > m.weight ? w : m, exerciseHistory[0]);
+    }, [exerciseHistory]);
+
+    const lastSession = useMemo(() => {
+      if (!exerciseHistory.length) return null;
+      const today = new Date().toDateString();
+      const past = exerciseHistory.filter(w => new Date(w.date).toDateString() !== today);
+      if (!past.length) return null;
+      const lastDay = new Date(past[0].date).toDateString();
+      return past.filter(w => new Date(w.date).toDateString() === lastDay);
+    }, [exerciseHistory]);
+
+    const lastTopSet = useMemo(() => {
+      if (!lastSession) return null;
+      return lastSession.reduce((m, w) => w.weight > m.weight ? w : m, lastSession[0]);
+    }, [lastSession]);
+
+    const todaySets = useMemo(() => {
+      const today = new Date().toDateString();
+      return exerciseHistory
+        .filter(w => new Date(w.date).toDateString() === today)
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+    }, [exerciseHistory]);
+
+    const todayExercises = useMemo(() => {
+      const today = new Date().toDateString();
+      const set = new Set();
+      workouts.forEach(w => {
+        if (new Date(w.date).toDateString() === today) set.add(w.exercise);
+      });
+      return set;
+    }, [workouts]);
+
+    const chartData = useMemo(() => {
+      const byDate = {};
+      exerciseHistory.forEach(w => {
+        const key = new Date(w.date).toISOString().split("T")[0];
+        if (!byDate[key] || w.weight > byDate[key].weight) {
+          byDate[key] = { date: key, weight: w.weight, reps: w.reps };
+        }
+      });
+      return Object.values(byDate).sort((a, b) => a.date.localeCompare(b.date));
+    }, [exerciseHistory]);
+
+    const journal = useMemo(() => {
+      const groups = {};
+      workouts.forEach(w => {
+        const key = new Date(w.date).toDateString();
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(w);
+      });
+      return Object.entries(groups)
+        .sort((a, b) => new Date(b[0]) - new Date(a[0]))
+        .map(([date, items]) => {
+          const byExercise = {};
+          items.forEach(it => {
+            if (!byExercise[it.exercise]) byExercise[it.exercise] = [];
+            byExercise[it.exercise].push(it);
+          });
+          return { date, byExercise };
+        });
+    }, [workouts]);
+
+    const isPB = (entry) => {
+      if (!entry) return false;
+      const all = workouts.filter(w => w.exercise === entry.exercise);
+      return all.every(w => w.weight <= entry.weight);
+    };
+
+    const logSet = () => {
+      const w = parseFloat(weight);
+      const r = parseInt(reps, 10);
+      if (isNaN(w) || isNaN(r) || w < 0 || r <= 0) return;
+      const previousMax = workouts
+        .filter(x => x.exercise === exercise)
+        .reduce((m, x) => Math.max(m, x.weight), 0);
+      const entry = {
+        id: Date.now() + "-" + Math.random().toString(36).slice(2, 8),
+        date: new Date().toISOString(),
+        bodyArea, exercise,
+        weight: w, reps: r
+      };
+      const newList = [entry].concat(workouts);
+      setWorkouts(newList);
+      persistWorkouts(newList);
+      setWeight("");
+      setReps("");
+      setFlashId(entry.id);
+      setTimeout(() => setFlashId(null), 1500);
+      if (w > previousMax && previousMax > 0) {
+        setPbCelebration({ weight: w, reps: r, exercise });
+        setTimeout(() => setPbCelebration(null), 4500);
+      }
+    };
+
+    const deleteSet = (id) => {
+      const newList = workouts.filter(w => w.id !== id);
+      setWorkouts(newList);
+      persistWorkouts(newList);
+    };
+
+    const addCustomExercise = () => {
+      const trimmed = customName.trim();
+      if (!trimmed) { setCustomError("Name is required."); return; }
+      const builtinClash = (EXERCISES[customArea] || []).some(n => n.toLowerCase() === trimmed.toLowerCase());
+      const customClash = customExercises.some(c => c.area === customArea && c.name.toLowerCase() === trimmed.toLowerCase());
+      if (builtinClash || customClash) {
+        setCustomError("An exercise with that name already exists in this category.");
+        return;
+      }
+      const newEntry = {
+        id: "cust-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8),
+        name: trimmed, area: customArea,
+        tip: customTip.trim() || null
+      };
+      const newList = customExercises.concat([newEntry]);
+      setCustomExercises(newList);
+      persistCustom(newList);
+      setBodyArea(customArea);
+      setExercise(trimmed);
+      setCustomName(""); setCustomTip(""); setCustomError("");
+      setShowAddCustom(false);
+    };
+
+    const removeCustomExercise = (name) => {
+      const newList = customExercises.filter(c => c.name !== name);
+      setCustomExercises(newList);
+      persistCustom(newList);
+      if (exercise === name) {
+        const fallback = exercisesForArea(bodyArea).filter(n => n !== name)[0] || EXERCISES[bodyArea][0];
+        setExercise(fallback);
+      }
+    };
+
+    const exportJournal = () => {
+      try {
+        const data = JSON.stringify({ workouts, customExercises }, null, 2);
+        const blob = new Blob([data], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "liftbook-" + new Date().toISOString().split("T")[0] + ".json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (e) { console.error(e); }
+    };
+
+    const importJournal = (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          // Accept either {workouts, customExercises} or just an array (older format)
+          const newWorkouts = Array.isArray(parsed) ? parsed : (parsed.workouts || []);
+          const newCustoms = (parsed.customExercises && Array.isArray(parsed.customExercises)) ? parsed.customExercises : [];
+          if (!Array.isArray(newWorkouts)) throw new Error("Invalid file");
+          if (!window.confirm("Import " + newWorkouts.length + " sets? This will replace your current data.")) return;
+          setWorkouts(newWorkouts);
+          setCustomExercises(newCustoms);
+          persistWorkouts(newWorkouts);
+          persistCustom(newCustoms);
+        } catch (err) {
+          alert("Could not read that file. Make sure it's a Liftbook export.");
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = "";
+    };
+
+    const canLog = weight !== "" && reps !== "" && parseFloat(weight) >= 0 && parseInt(reps, 10) > 0;
+    const today = new Date();
+    const customsForArea = customExercises.filter(c => c.area === bodyArea);
+
+    return html`
+      ${pbCelebration && html`
+        <div class="pb-toast" style=${{
+          position: "sticky", top: 0, zIndex: 10,
+          background: "var(--ink)", color: "var(--bg)",
+          padding: "16px 20px", display: "flex",
+          alignItems: "center", justifyContent: "center",
+          gap: 14, flexWrap: "wrap"
+        }}>
+          <span class="serif" style=${{ fontStyle: "italic", fontSize: 22, fontWeight: 500 }}>New record.</span>
+          <span class="sans" style=${{ fontSize: 13, opacity: 0.75, fontWeight: 500 }}>
+            ${pbCelebration.weight}kg × ${pbCelebration.reps}
+          </span>
+        </div>
+      `}
+
+      <div class="app-wrap">
+        <header style=${{ paddingTop: 32, paddingBottom: 22 }}>
+          <div style=${{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
+            <span class="sans smallcaps" style=${{ fontSize: 10, color: "var(--ink2)", fontWeight: 700 }}>
+              Volume № ${String(workouts.length).padStart(3, "0")}
+            </span>
+            <span class="sans smallcaps" style=${{ fontSize: 10, color: "var(--muted)", fontWeight: 600 }}>
+              Personal Edition
+            </span>
+          </div>
+          <div class="rule-thick" style=${{ marginBottom: 12 }}></div>
+          <h1 class="serif" style=${{
+            margin: 0, fontSize: "clamp(40px, 11vw, 56px)",
+            lineHeight: 0.92, fontWeight: 600, letterSpacing: "-0.025em"
+          }}>
+            <em style=${{ fontWeight: 500, color: "var(--accent)" }}>Lift</em>book
+          </h1>
+          <div style=${{
+            marginTop: 14, display: "flex",
+            justifyContent: "space-between", alignItems: "baseline", gap: 16
+          }}>
+            <span class="sans" style=${{ fontSize: 12, color: "var(--ink2)", letterSpacing: "0.04em" }}>
+              ${formatDate(today)}
+            </span>
+            <${SaveIndicator} status=${saveStatus} />
+          </div>
+          <div class="rule-thin" style=${{ marginTop: 12 }}></div>
+        </header>
+
+        ${!storageAvailable && loaded && html`
+          <div style=${{
+            background: "var(--accent-soft)", border: "1px solid var(--accent)",
+            padding: "12px 16px", marginBottom: 24
+          }}>
+            <div class="sans smallcaps" style=${{ fontSize: 10, color: "var(--accent)", fontWeight: 700, marginBottom: 4 }}>
+              Storage unavailable
+            </div>
+            <div class="serif" style=${{ fontSize: 13, fontStyle: "italic", color: "var(--ink2)", lineHeight: 1.5 }}>
+              Your sets won't persist. Use Export in the Journal tab to save manually.
+            </div>
+          </div>
+        `}
+
+        <nav style=${{
+          display: "flex", gap: 24,
+          borderBottom: "1px solid var(--border-soft)", marginBottom: 32
+        }}>
+          <button class="nav-link ${view === 'train' ? 'active' : ''}" onClick=${() => setView("train")}>Train</button>
+          <button class="nav-link ${view === 'sessions' ? 'active' : ''}" onClick=${() => setView("sessions")}>Sessions</button>
+          <button class="nav-link ${view === 'journal' ? 'active' : ''}" onClick=${() => setView("journal")}>Journal</button>
+        </nav>
+
+        ${view === "train" && html`
+          <section style=${{ marginBottom: 30 }}>
+            <div class="sans smallcaps" style=${{ fontSize: 10, color: "var(--muted)", marginBottom: 14, fontWeight: 600 }}>
+              Today's Focus
+            </div>
+            <div style=${{ display: "flex", flexWrap: "wrap", gap: "14px 22px" }}>
+              ${AREAS.map(a => html`
+                <button key=${a} class="area-link ${bodyArea === a ? 'active' : ''}" onClick=${() => selectArea(a)}>${a}</button>
+              `)}
+            </div>
+          </section>
+
+          <section style=${{ marginBottom: 28 }}>
+            <div style=${{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
+              <div class="sans smallcaps" style=${{ fontSize: 10, color: "var(--muted)", fontWeight: 600 }}>
+                The Exercise
+              </div>
+              <button class="add-custom-link" onClick=${() => {
+                setShowAddCustom(v => !v);
+                setCustomArea(bodyArea);
+                setCustomError("");
+              }}>
+                ${showAddCustom ? "× cancel" : "+ add custom"}
+              </button>
+            </div>
+            <select class="editorial" value=${exercise} onChange=${(e) => setExercise(e.target.value)}>
+              ${EXERCISES[bodyArea].map(ex => html`<option key=${ex} value=${ex}>${ex}</option>`)}
+              ${customsForArea.length > 0 && html`
+                <optgroup label="── your custom ──">
+                  ${customsForArea.map(c => html`<option key=${c.id} value=${c.name}>${c.name}</option>`)}
+                </optgroup>
+              `}
+            </select>
+
+            ${currentTip && html`
+              <div class="serif" style=${{
+                fontSize: 14, fontStyle: "italic", color: "var(--ink2)",
+                marginTop: 10, lineHeight: 1.5, paddingLeft: 10,
+                borderLeft: "2px solid var(--accent)"
+              }}>
+                ${currentTip}
+              </div>
+            `}
+
+            ${currentCustom && html`
+              <div style=${{ marginTop: 8 }}>
+                <button class="delete-btn" onClick=${() => {
+                  if (window.confirm('Remove "' + currentCustom.name + '" from your custom exercises? Logged sets will remain.')) {
+                    removeCustomExercise(currentCustom.name);
+                  }
+                }}>remove this custom exercise</button>
+              </div>
+            `}
+
+            ${showAddCustom && html`
+              <div style=${{
+                marginTop: 16, padding: 16,
+                background: "var(--card-soft)",
+                border: "1px solid var(--border)"
+              }}>
+                <div class="sans smallcaps" style=${{ fontSize: 10, color: "var(--ink2)", fontWeight: 700, marginBottom: 14 }}>
+                  New Custom Exercise
+                </div>
+                <div style=${{ marginBottom: 14 }}>
+                  <label class="serif" style=${{ fontSize: 12, fontStyle: "italic", color: "var(--muted)", display: "block", marginBottom: 4 }}>Name</label>
+                  <input class="text-input" type="text"
+                    value=${customName}
+                    onInput=${(e) => { setCustomName(e.target.value); setCustomError(""); }}
+                    placeholder="e.g. Landmine Press" />
+                </div>
+                <div style=${{ marginBottom: 14 }}>
+                  <label class="serif" style=${{ fontSize: 12, fontStyle: "italic", color: "var(--muted)", display: "block", marginBottom: 4 }}>Category</label>
+                  <select class="text-input" value=${customArea} onChange=${(e) => setCustomArea(e.target.value)}>
+                    ${AREAS.map(a => html`<option key=${a} value=${a}>${a}</option>`)}
+                  </select>
+                </div>
+                <div style=${{ marginBottom: 14 }}>
+                  <label class="serif" style=${{ fontSize: 12, fontStyle: "italic", color: "var(--muted)", display: "block", marginBottom: 4 }}>
+                    Form tip <span style=${{ color: "var(--muted)" }}>(optional)</span>
+                  </label>
+                  <textarea class="text-input"
+                    value=${customTip}
+                    onInput=${(e) => setCustomTip(e.target.value)}
+                    placeholder="A short cue to remember the form"
+                    rows="2"
+                    style=${{ resize: "vertical", fontFamily: "'Fraunces', Georgia, serif", fontStyle: "italic" }}></textarea>
+                </div>
+                ${customError && html`
+                  <div class="serif" style=${{ fontSize: 13, fontStyle: "italic", color: "var(--accent)", marginBottom: 12 }}>${customError}</div>
+                `}
+                <button class="btn-log" onClick=${addCustomExercise} style=${{ padding: "14px 20px" }}>Save exercise →</button>
+              </div>
+            `}
+          </section>
+
+          <section style=${{ marginBottom: 32 }}>
+            <div style=${{
+              display: "grid", gridTemplateColumns: "1fr 1px 1fr",
+              background: "var(--card)", padding: "26px 0",
+              border: "1px solid var(--border)"
+            }}>
+              <${StatColumn} label="Personal Best" entry=${pb} italicLabel=${pb ? "all-time" : null} accent=${true} />
+              <div style=${{ background: "var(--border)" }}></div>
+              <${StatColumn} label="Last Session" entry=${lastTopSet} italicLabel=${lastTopSet ? timeAgo(lastTopSet.date) : null} />
+            </div>
+          </section>
+
+          ${chartData.length >= 2 && html`
+            <section style=${{ marginBottom: 36 }}>
+              <div style=${{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
+                <div class="sans smallcaps" style=${{ fontSize: 10, color: "var(--muted)", fontWeight: 600 }}>
+                  Trajectory · ${chartData.length} sessions
+                </div>
+                <div class="serif" style=${{ fontSize: 12, color: "var(--muted)", fontStyle: "italic" }}>top set, by date</div>
+              </div>
+              <div class="rule-thin"></div>
+              <div style=${{ marginTop: 14 }}>
+                <${MiniChart} data=${chartData} />
+              </div>
+            </section>
+          `}
+
+          ${todaySets.length > 0 && html`
+            <section style=${{ marginBottom: 32 }}>
+              <div class="sans smallcaps" style=${{ fontSize: 10, color: "var(--muted)", marginBottom: 12, fontWeight: 600 }}>
+                Today's Lifts · ${todaySets.length}
+              </div>
+              <div class="rule-thin"></div>
+              ${todaySets.map((entry, i) => html`
+                <${SetRow} key=${entry.id} entry=${entry} index=${i + 1} isPB=${isPB(entry)}
+                  onDelete=${() => deleteSet(entry.id)} flash=${flashId === entry.id} />
+              `)}
+            </section>
+          `}
+
+          <section style=${{
+            border: "2px solid var(--ink)", padding: 22,
+            background: "var(--card-soft)"
+          }}>
+            <div class="sans smallcaps" style=${{ fontSize: 10, color: "var(--ink2)", marginBottom: 18, fontWeight: 700 }}>
+              Record a Set
+            </div>
+            <div style=${{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28, marginBottom: 24 }}>
+              <${LabeledInput} label="Weight (kg)" value=${weight} onChange=${setWeight} />
+              <${LabeledInput} label="Reps" value=${reps} onChange=${setReps} integer=${true} />
+            </div>
+            <button class="btn-log" disabled=${!canLog} onClick=${logSet}>Log this set →</button>
+          </section>
+        `}
+
+        ${view === "sessions" && html`
+          <div style=${{ marginBottom: 28 }}>
+            <div class="serif" style=${{
+              fontSize: 26, fontWeight: 600, fontStyle: "italic",
+              letterSpacing: "-0.015em", lineHeight: 1.15, marginBottom: 6
+            }}>Pick a programme.</div>
+            <div class="sans" style=${{ fontSize: 13, color: "var(--ink2)", lineHeight: 1.5 }}>
+              Three classic splits. Tap any exercise to start logging it. Sets you've already done today are marked.
+            </div>
+          </div>
+
+          ${SESSIONS.map(session => {
+            const doneCount = session.exercises.filter(ex => todayExercises.has(ex.name)).length;
+            const total = session.exercises.length;
+            const allDone = doneCount === total;
+            return html`
+              <article key=${session.id} style=${{ marginBottom: 36, paddingBottom: 8 }}>
+                <header style=${{ marginBottom: 14 }}>
+                  <div style=${{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4, gap: 12 }}>
+                    <h2 class="serif" style=${{ margin: 0, fontSize: 32, fontWeight: 600, letterSpacing: "-0.02em", lineHeight: 1 }}>${session.name}</h2>
+                    <span class="sans smallcaps" style=${{
+                      fontSize: 10, color: allDone ? "var(--done)" : "var(--muted)",
+                      fontWeight: 700, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap"
+                    }}>${doneCount}/${total} ${allDone ? "· complete" : "today"}</span>
+                  </div>
+                  <div class="sans smallcaps" style=${{ fontSize: 10, color: "var(--accent)", fontWeight: 700, marginBottom: 6 }}>${session.subtitle}</div>
+                  <div class="serif" style=${{ fontSize: 14, fontStyle: "italic", color: "var(--muted)" }}>${session.italic}</div>
+                  <div class="rule-thick" style=${{ marginTop: 10 }}></div>
+                </header>
+                ${session.exercises.map((ex, i) => {
+                  const done = todayExercises.has(ex.name);
+                  return html`
+                    <button key=${session.id + "-" + ex.name}
+                      class="session-row ${done ? 'done' : ''}"
+                      onClick=${() => startFromSession(ex.area, ex.name)}>
+                      <span class="serif" style=${{ fontSize: 16, fontStyle: "italic", color: "var(--muted)", fontWeight: 500, minWidth: 26 }}>
+                        ${String(i + 1).padStart(2, "0")}.
+                      </span>
+                      <div style=${{ flex: 1, minWidth: 0 }}>
+                        <div class="sans" style=${{
+                          fontSize: 16, fontWeight: 600, lineHeight: 1.3,
+                          textDecoration: done ? "line-through" : "none",
+                          textDecorationColor: "var(--muted)"
+                        }}>${ex.name}</div>
+                        <div class="sans smallcaps" style=${{ fontSize: 9, color: "var(--muted)", fontWeight: 600, marginTop: 3 }}>${ex.area}</div>
+                      </div>
+                      <div style=${{ textAlign: "right", flexShrink: 0 }}>
+                        <div class="sans" style=${{
+                          fontSize: 13, fontWeight: 600,
+                          fontVariantNumeric: "tabular-nums",
+                          color: done ? "var(--done)" : "var(--ink2)"
+                        }}>${done ? "✓ done" : ex.scheme}</div>
+                      </div>
+                    </button>
+                  `;
+                })}
+              </article>
+            `;
+          })}
+        `}
+
+        ${view === "journal" && html`
+          ${journal.length === 0 ? html`
+            <div style=${{ textAlign: "center", padding: "80px 20px" }}>
+              <div class="serif" style=${{ fontSize: 36, fontWeight: 500, fontStyle: "italic", color: "var(--muted)", marginBottom: 14 }}>Blank pages.</div>
+              <div class="sans" style=${{ fontSize: 13, color: "var(--muted)", lineHeight: 1.5, letterSpacing: "0.02em" }}>Begin training to write your first entry.</div>
+            </div>
+          ` : html`
+            ${journal.map(({ date, byExercise }) => html`
+              <${JournalEntry} key=${date} date=${date} byExercise=${byExercise} isPB=${isPB} />
+            `)}
+          `}
+          <div style=${{
+            marginTop: 40, paddingTop: 24,
+            borderTop: "1px solid var(--border-soft)",
+            display: "flex", justifyContent: "space-between",
+            alignItems: "center", flexWrap: "wrap", gap: 12
+          }}>
+            <div>
+              <div class="serif" style=${{ fontSize: 14, fontStyle: "italic", color: "var(--ink2)", marginBottom: 2 }}>
+                Saved on this device.
+              </div>
+              <div class="sans" style=${{ fontSize: 11, color: "var(--muted)", letterSpacing: "0.04em" }}>
+                ${workouts.length} sets across ${journal.length} ${journal.length === 1 ? "day" : "days"}
+              </div>
+            </div>
+            <div style=${{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <label class="export-link" style=${{ cursor: "pointer" }}>
+                Import
+                <input type="file" accept=".json,application/json" onChange=${importJournal} style=${{ display: "none" }} />
+              </label>
+              <button class="export-link" onClick=${exportJournal}>Export</button>
+            </div>
+          </div>
+        `}
+      </div>
+    `;
+  }
+
+  /* ====================== SUB-COMPONENTS ====================== */
+
+  function SaveIndicator({ status }) {
+    const { state, message } = status;
+    let dotColor = "var(--muted)";
+    let label;
+    let italic = true;
+    switch (state) {
+      case "loaded": dotColor = "var(--done)"; label = message || "loaded"; break;
+      case "ready": label = message || "ready"; break;
+      case "saving": dotColor = "var(--accent)"; label = "saving…"; break;
+      case "saved": dotColor = "var(--done)"; label = message || "saved"; break;
+      case "error": dotColor = "var(--accent)"; label = message || "save error"; italic = false; break;
+      default: label = "";
+    }
+    return html`
+      <span class="serif" style=${{
+        fontSize: 13, fontStyle: italic ? "italic" : "normal",
+        color: "var(--muted)", fontWeight: 400,
+        display: "inline-flex", alignItems: "center", gap: 6
+      }}>
+        <span style=${{
+          display: "inline-block", width: 6, height: 6,
+          borderRadius: "50%", background: dotColor, flexShrink: 0
+        }}></span>
+        ${label}
+      </span>
+    `;
+  }
+
+  function StatColumn({ label, entry, italicLabel, accent }) {
+    return html`
+      <div style=${{ padding: "0 24px", textAlign: "center" }}>
+        <div class="sans smallcaps" style=${{
+          fontSize: 10, color: accent ? "var(--accent)" : "var(--muted)",
+          fontWeight: 700, marginBottom: 12
+        }}>${label}</div>
+        ${entry ? html`
+          <div class="sans" style=${{
+            fontSize: 44, fontWeight: 700, lineHeight: 1,
+            color: "var(--ink)", fontVariantNumeric: "tabular-nums"
+          }}>
+            ${entry.weight}<span style=${{ fontSize: 17, color: "var(--muted)", fontWeight: 500 }}>kg</span>
+          </div>
+          <div class="serif" style=${{
+            fontSize: 17, fontStyle: "italic", color: "var(--ink2)",
+            marginTop: 6, fontWeight: 500
+          }}>× ${entry.reps} reps</div>
+          ${italicLabel && html`
+            <div class="serif" style=${{
+              fontSize: 12, color: "var(--muted)",
+              fontStyle: "italic", marginTop: 10
+            }}>${italicLabel}</div>
+          `}
+        ` : html`
+          <div class="serif" style=${{
+            fontSize: 16, fontStyle: "italic",
+            color: "var(--muted)", marginTop: 14
+          }}>no record yet</div>
+        `}
+      </div>
+    `;
+  }
+
+  function LabeledInput({ label, value, onChange, integer }) {
+    return html`
+      <div>
+        <input class="editorial" type="number"
+          inputMode=${integer ? "numeric" : "decimal"}
+          step=${integer ? "1" : "0.5"}
+          value=${value}
+          onInput=${(e) => onChange(e.target.value)}
+          placeholder="—" />
+        <div class="serif" style=${{
+          fontSize: 13, color: "var(--muted)",
+          fontStyle: "italic", marginTop: 8, textAlign: "center"
+        }}>${label}</div>
+      </div>
+    `;
+  }
+
+  function SetRow({ entry, index, isPB, onDelete, flash }) {
+    return html`
+      <div class=${flash ? "flash-entry" : ""} style=${{
+        display: "flex", alignItems: "center",
+        padding: "14px 0", borderBottom: "1px solid var(--border-soft)", gap: 16
+      }}>
+        <div class="serif" style=${{
+          fontSize: 18, fontStyle: "italic",
+          color: "var(--muted)", fontWeight: 500, minWidth: 28
+        }}>${String(index).padStart(2, "0")}.</div>
+        <div style=${{ flex: 1, minWidth: 0 }}>
+          <div class="sans" style=${{
+            fontSize: 22, fontWeight: 700,
+            fontVariantNumeric: "tabular-nums",
+            display: "flex", alignItems: "baseline", flexWrap: "wrap", gap: 6
+          }}>
+            <span>${entry.weight}<span style=${{ fontSize: 12, color: "var(--muted)", fontWeight: 500 }}>kg</span></span>
+            <span style=${{ color: "var(--muted)", fontWeight: 400 }}>×</span>
+            <span>${entry.reps}</span>
+            ${isPB && html`
+              <span class="serif" style=${{
+                fontSize: 13, fontStyle: "italic",
+                color: "var(--accent)", marginLeft: 4, fontWeight: 600
+              }}>new record</span>
+            `}
+          </div>
+          <div class="sans" style=${{
+            fontSize: 11, color: "var(--muted)",
+            letterSpacing: "0.04em", marginTop: 2
+          }}>
+            ${new Date(entry.date).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
+          </div>
+        </div>
+        <button class="delete-btn" onClick=${onDelete}>remove</button>
+      </div>
+    `;
+  }
+
+  function JournalEntry({ date, byExercise, isPB }) {
+    const dateObj = new Date(date);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+    const same = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+    let label;
+    if (same(dateObj, today)) label = "Today";
+    else if (same(dateObj, yesterday)) label = "Yesterday";
+    else label = dateObj.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
+
+    return html`
+      <article style=${{ marginBottom: 36 }}>
+        <header style=${{ marginBottom: 18 }}>
+          <div class="serif" style=${{
+            fontSize: 30, fontWeight: 600,
+            letterSpacing: "-0.02em", color: "var(--ink)"
+          }}>${label}</div>
+          <div class="rule-thick" style=${{ marginTop: 8 }}></div>
+        </header>
+        ${Object.entries(byExercise).map(([ex, sets]) => html`
+          <div key=${ex} style=${{ marginBottom: 22 }}>
+            <div style=${{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8, gap: 12 }}>
+              <div style=${{ minWidth: 0 }}>
+                <div class="sans smallcaps" style=${{ fontSize: 9, color: "var(--accent)", fontWeight: 700, marginBottom: 2 }}>${sets[0].bodyArea}</div>
+                <div class="serif" style=${{ fontSize: 21, fontWeight: 600, fontStyle: "italic", lineHeight: 1.2 }}>${ex}</div>
+              </div>
+              <div class="sans smallcaps" style=${{ fontSize: 10, color: "var(--muted)", fontWeight: 600, whiteSpace: "nowrap" }}>
+                ${sets.length} ${sets.length === 1 ? "set" : "sets"}
+              </div>
+            </div>
+            <div style=${{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              ${sets.sort((a, b) => new Date(a.date) - new Date(b.date)).map(s => html`
+                <span key=${s.id} class="sans" style=${{
+                  fontSize: 13, fontWeight: 600, padding: "4px 10px",
+                  background: "var(--card-soft)", border: "1px solid var(--border-soft)",
+                  fontVariantNumeric: "tabular-nums",
+                  color: isPB(s) ? "var(--accent)" : "var(--ink)",
+                  fontStyle: isPB(s) ? "italic" : "normal"
+                }}>${s.weight} × ${s.reps}</span>
+              `)}
+            </div>
+          </div>
+        `)}
+      </article>
+    `;
+  }
+
+  /* ====================== BOOT ====================== */
+
+  render(html`<${Liftbook} />`, document.getElementById("app"));
+})();
+</script>
+</body>
+</html>
